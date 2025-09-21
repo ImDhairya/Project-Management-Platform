@@ -1,0 +1,21 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: project_management_mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27017:27017" # host:container → expose Mongo to host
+    volumes:
+      - project_management_data:/data/db # persist data
+    networks:
+      - project_network
+
+volumes:
+  project_management_data:
+
+networks:
+  project_network:
+    driver: bridge
