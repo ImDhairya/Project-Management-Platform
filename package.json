@@ -1,0 +1,23 @@
+{
+  "name": "project-management",
+  "version": "1.0.0",
+  "description": "This is a project management platform.",
+  "keywords": [
+    "project",
+    "management",
+    "backend",
+    "api",
+    "Dhairya"
+  ],
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --watch index.js"
+  },
+  "devDependencies": {
+    "prettier": "3.6.2"
+  }
+}
