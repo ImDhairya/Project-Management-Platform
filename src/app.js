@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import healthCheckRouter from "./routes/healthcheck.route.js";
 dotenv.config({
   path: "./.env",
 });
@@ -16,14 +17,16 @@ app.use(
     origin: process.env.CORS_ORIGIN?.split(",") || "http://localhost:5173",
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Authorization", "Content-Type"]
+    allowedHeaders: ["Authorization", "Content-Type"],
   }),
 );
+app.use("/api/v1/healthcheck/", healthCheckRouter);
 
 app.get("/", (req, res) => {
-  res.json({
-    message: "Good day friend.",
+  return res.status(201).json({
+    message: "The route is working. ",
   });
 });
+
 
 export default app;
