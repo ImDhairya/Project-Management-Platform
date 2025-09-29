@@ -4,6 +4,7 @@ import cors from "cors";
 import healthCheckRouter from "./routes/healthcheck.route.js";
 import authRouter from "./routes/auth.route.js";
 import { ApiError } from "./utils/api.error.js";
+import cookieParser from 'cookie-parser'
 dotenv.config({
   path: "./.env",
 });
@@ -14,6 +15,7 @@ const app = express();
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
+app.use(cookieParser())
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN?.split(",") || "http://localhost:5173",

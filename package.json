@@ -15,7 +15,8 @@
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "start": "pm2  start src/index.js"
   },
   "devDependencies": {
     "nodemon": "^3.1.10",
@@ -24,12 +25,15 @@
   "dependencies": {
     "@types/express": "^4.17.23",
     "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
+    "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",
     "mailgen": "^2.0.30",
     "mongoose": "^8.18.1",
-    "nodemailer": "^7.0.6"
+    "nodemailer": "^7.0.6",
+    "pm2": "^6.0.13"
   }
 }
