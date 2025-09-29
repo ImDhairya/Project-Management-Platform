@@ -22,7 +22,7 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.route("reset-password/:resetToken", resetForgotPassword);
+router.route("/reset-password/:resetToken").post(resetForgotPassword);
 router.route("/register").post(userRegisterValidator(), validate, registerUser);
 router.route("/login").post(userLoginValidator(), validate, loginUser);
 router

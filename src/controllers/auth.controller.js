@@ -3,6 +3,7 @@ import { ApiError } from "../utils/api.error.js";
 import { ApiResponse } from "../utils/api.response.js";
 import { asyncHandler } from "../utils/async-handler.js";
 import { emailVerificationMailgenContent, sendEmail } from "../utils/mail.js";
+import crypto from "crypto";
 import jwt from "jsonwebtoken";
 
 const generateAccessAndRefreshTokens = async (userId) => {
@@ -55,7 +56,7 @@ const registerUser = asyncHandler(async (req, res) => {
     subject: "Please verify your email.",
     mailgenContent: emailVerificationMailgenContent(
       user.username,
-      `${req.protocol}://${req.get("host")}/api/v1/users/verify-email/${unhashedToken}`,
+      `${req.protocol}://${req.get("host")}/api/v1/auth/verify-email/${unhashedToken}`,
     ),
   });
 
@@ -188,7 +189,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
   if (!verificationToken) {
     throw new ApiError("The email verification token is missing.", 400);
   }
-
+  console.log(verificationToken, "HHHHHHH");
   let hashedToken = crypto
     .createHash("sha256")
     .update(verificationToken)
@@ -238,7 +239,7 @@ const resendEmailVerification = asyncHandler(async (req, res) => {
     subject: "Resend email verification mail sent.",
     mailgenContent: emailVerificationMailgenContent(
       user.username,
-      `${req.protocol}://${req.get("host")}/api/v1/users/verify-email/${unhashedToken}`,
+      `${req.protocol}://${req.get("host")}/api/v1/auth/verify-email/${unhashedToken}`,
     ),
   });
 
