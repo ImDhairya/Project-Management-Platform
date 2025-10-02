@@ -76,4 +76,14 @@ const projectSchema = new Schema(
 //   if(this.)
 // })
 
+projectSchema.pre("save", async function (next) {
+  if (!this.isModified("members")) {
+    return next();
+  }
+
+  this.memberCount = this.members.length;
+
+  
+});
+
 export const Project = mongoose.model("Project", projectSchema);

@@ -3,6 +3,8 @@ import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/api.error.js";
 import { ApiResponse } from "../utils/api.response.js";
 import { asyncHandler } from "../utils/async-handler.js";
+import { UserRolesEnum } from "../utils/constants.js";
+import { Project } from "../models/project.model.js";
 
 export const verifyJWT = asyncHandler(async (req, res, next) => {
   const Token =
@@ -32,6 +34,32 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
 
     next();
   } catch (error) {
+    console.log(error, "FFFUUerr");
     throw new ApiError("Error in getting the api user", 401, error);
   }
+});
+
+export const AdminMember = asyncHandler(async (req, res, next) => {
+  const userId = req.user?._id;
+
+  const projectId = req.params?.id;
+
+  const existingProject = await Project.findById(projectId);
+
+  if (!existingProject) {
+    throw new ApiError(`Project with id ${projectId} not found`, 404);
+  }
+
+  const member = existingProject.members.find(
+    (m) => m.user.toString() == userId.toString(),
+  );
+
+  console.log(existingProject, "FFF");
+  if (!member || member.role !== UserRolesEnum.PROJECT_ADMIN) {
+    throw new ApiError("Not authorized", 403);
+  }
+
+  req.project = existingProject;
+
+  next();
 });
