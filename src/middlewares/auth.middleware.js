@@ -21,6 +21,7 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
     if (!deodedToken) {
       throw new ApiError("The jwt verification failed.", 403);
     }
+    console.log(deodedToken, "HHHFFFF");
 
     const user = await User.findById(deodedToken?._id).select(
       "-password -refreshToken -isEmailVerified -forgotPasswordToken -forgotPasswordExpiry -emailVerificationToken -emailVerificationExpiry",
@@ -39,7 +40,32 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
   }
 });
 
-export const AdminMember = asyncHandler(async (req, res, next) => {
+export const adminMember = asyncHandler(async (req, res, next) => {
+  const userId = req.user?._id;
+
+  const projectId = req.params?.id;
+
+  const existingProject = await Project.findById(projectId);
+
+  if (!existingProject) {
+    throw new ApiError(`Project with id ${projectId} not found`, 404);
+  }
+
+  // const member = existingProject.members.find(
+  //   (m) => m.user.toString() == userId.toString(),
+  // );
+
+  console.log(existingProject, "FFF");
+  // if (!member || member.role !== UserRolesEnum.ADMIN) {
+  //   throw new ApiError("Not authorized", 403);
+  // }
+
+  req.project = existingProject;
+
+  next();
+});
+
+export const projectAdmin = asyncHandler(async (req, res, next) => {
   const userId = req.user?._id;
 
   const projectId = req.params?.id;
