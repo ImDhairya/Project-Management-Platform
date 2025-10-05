@@ -51,14 +51,14 @@ export const adminMember = asyncHandler(async (req, res, next) => {
     throw new ApiError(`Project with id ${projectId} not found`, 404);
   }
 
-  // const member = existingProject.members.find(
-  //   (m) => m.user.toString() == userId.toString(),
-  // );
+  const member = existingProject.members.find(
+    (m) => m.user.toString() == userId.toString(),
+  );
 
   console.log(existingProject, "FFF");
-  // if (!member || member.role !== UserRolesEnum.ADMIN) {
-  //   throw new ApiError("Not authorized", 403);
-  // }
+  if (!member || member.role !== UserRolesEnum.PROJECT_ADMIN) {
+    throw new ApiError("Not authorized", 403);
+  }
 
   req.project = existingProject;
 
@@ -80,7 +80,6 @@ export const projectAdmin = asyncHandler(async (req, res, next) => {
     (m) => m.user.toString() == userId.toString(),
   );
 
-  console.log(existingProject, "FFF");
   if (!member || member.role !== UserRolesEnum.ADMIN) {
     throw new ApiError("Not authorized", 403);
   }

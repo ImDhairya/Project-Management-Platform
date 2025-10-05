@@ -89,7 +89,12 @@ export const createTasks = asyncHandler(async (req, res) => {
 
 export const getTask = asyncHandler(async (req, res) => {
   const taskId = req.params.taskId;
-  const projectId = req.params.projectId;
+  const projectId = req.params.id;
 
-  const createTask = await Task.findOne({});
+  const taskData = await Task.findOne({
+    _id: taskId,
+    project: projectId,
+  });
+
+  console.log(taskData, "HEEELLLO");
 });

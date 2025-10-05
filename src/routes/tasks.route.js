@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { projectAdmin, verifyJWT } from "../middlewares/auth.middleware.js";
-import { createTasks, getTasks } from "../controllers/task.controller.js";
+import { createTasks, getTask, getTasks } from "../controllers/task.controller.js";
 import { validate } from "../middlewares/validator.middleware.js";
 import { createTasksValidator } from "../validators/project.validator.js";
 import { Project } from "../models/project.model.js";
@@ -33,7 +33,7 @@ router.route("/:id").post(
 // project id   t   task id
 
 // get task details by project id and task id
-router.route("/:id/t/:taskId").get(verifyJWT, projectAdmin, createTasks);
+router.route("/:id/t/:taskId").get(verifyJWT, getTask);
 
 // // update the task for the project
 // router.route(":id/t/:taskId").put(verifyJWT, projectAdmin, updateProjectTask);
