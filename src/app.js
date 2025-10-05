@@ -4,6 +4,7 @@ import cors from "cors";
 import healthCheckRouter from "./routes/healthcheck.route.js";
 import authRouter from "./routes/auth.route.js";
 import projectRouter from "./routes/projects.route.js";
+import tasksRouter from "./routes/tasks.route.js";
 import { ApiError } from "./utils/api.error.js";
 import cookieParser from "cookie-parser";
 dotenv.config({
@@ -43,6 +44,7 @@ app.use((err, req, res, next) => {
 app.use("/api/v1/healthcheck/", healthCheckRouter);
 app.use("/api/v1/auth/", authRouter);
 app.use("/api/v1/projects/", projectRouter);
+app.use("/api/v1/tasks/", tasksRouter);
 
 app.get("/", (req, res) => {
   return res.status(201).json({

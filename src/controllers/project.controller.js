@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Project } from "../models/project.model.js";
 import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/api.error.js";
@@ -90,6 +91,64 @@ export const updateProject = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(202, updatedProject, "The project got updated"));
+});
+
+export const addProjectMember = asyncHandler(async (req, res) => {
+  const projectId = req.params.id;
+
+  const { memberId, role } = req.body;
+
+  const objectId = new mongoose.Types.ObjectId(memberId);
+
+  const existingProject = await Project.findOne({
+    _id: projectId,
+    "members.user": memberId,
+  });
+
+  if (existingProject) {
+    return res.status(400).json({
+      success: false,
+      message: "Member already exists in this project.",
+    });
+  }
+
+  const updateMemberProject = await Project.updateOne(
+    { _id: projectId },
+    {
+      $push: {
+        members: {
+          user: objectId,
+          role: role,
+        },
+      },
+    },
+  );
+
+  return res
+    .status(202)
+    .json(
+      new ApiResponse(
+        202,
+        updateMemberProject,
+        "The members role updated successfully.",
+      ),
+    );
+});
+
+export const getProjectMembers = asyncHandler(async (req, res) => {
+  const projectId = req.params.id;
+  const project = await Project.findById(projectId);
+
+  const usersData = await Promise.all(
+    project.members.map(async (member) => {
+      const user = await User.findById(member.user);
+      return user;
+    }),
+  );
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, usersData, "The project members data."));
 });
 
 export const updateMemberRole = asyncHandler(async (req, res) => {
