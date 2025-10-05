@@ -79,9 +79,11 @@ export const projectAdmin = asyncHandler(async (req, res, next) => {
   const member = existingProject.members.find(
     (m) => m.user.toString() == userId.toString(),
   );
-  // if (!member || member.role !== UserRolesEnum.PROJECT_ADMIN) {
-  //   throw new ApiError("Not authorized", 403);
-  // }
+
+  console.log(existingProject, "FFF");
+  if (!member || member.role !== UserRolesEnum.ADMIN) {
+    throw new ApiError("Not authorized", 403);
+  }
 
   req.project = existingProject;
 
