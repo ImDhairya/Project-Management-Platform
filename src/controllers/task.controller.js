@@ -16,18 +16,20 @@ export const getTasks = asyncHandler(async (req, res) => {
     );
   }
 
-  const taskLookup = await Project.aggregate([
+  const taskLookup = await Task.aggregate([
     {
-      $match: { _id: new mongoose.Types.ObjectId(project._id) },
-    },
-    {
-      $lookup: {
-        from: "tasks",
-        localField: "_id",
-        foreignField: "_id",
-        as: "tasks",
+      $match: {
+        project: project._id,
       },
     },
+    // {
+    //   $lookup: {
+    //     from: "tasks",
+    //     localField: "_id",
+    //     foreignField: "_id",
+    //     as: "tasks",
+    //   },
+    // },
   ]);
 
   console.log(taskLookup, "V!");
@@ -35,7 +37,11 @@ export const getTasks = asyncHandler(async (req, res) => {
   return res
     .status(202)
     .json(
-      new ApiResponse(202, project, "The project tasks fetched successfully."),
+      new ApiResponse(
+        202,
+        taskLookup,
+        "The project tasks fetched successfully.",
+      ),
     );
 });
 
@@ -72,15 +78,14 @@ export const createTasks = asyncHandler(async (req, res) => {
     createdBy: user._id,
   });
 
-  console.log(createTask, "ts");
-
-  // const updatedTask = await Project.updateOne(
-  //   { _id: project._id },
-  //   {
-  //     tasks: tasks,
-  //   },
-  // );
-  // $push: { tasks: { $each: tasks } },
+  const updatedTask = await Project.updateOne(
+    { _id: project._id },
+    {
+      $push: {
+        tasks: createTask._id,
+      },
+    },
+  );
 
   return res
     .status(202)
@@ -88,13 +93,60 @@ export const createTasks = asyncHandler(async (req, res) => {
 });
 
 export const getTask = asyncHandler(async (req, res) => {
-  const taskId = req.params.taskId;
-  const projectId = req.params.id;
+  const { taskId, id: projectId } = req.params;
 
-  const taskData = await Task.findOne({
-    _id: taskId,
-    project: projectId,
-  });
+  const tasks = await Task.aggregate([
+    {
+      $match: {
+        project: new mongoose.Types.ObjectId(projectId),
+        ...(taskId && { _id: new mongoose.Types.ObjectId(taskId) }),
+      },
+    },
+  ]);
 
-  console.log(taskData, "HEEELLLO");
+  if (!tasks.length) {
+    return res
+      .status(404)
+      .json(new ApiResponse(404, [], "No tasks found for this project."));
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, tasks, "Fetched tasks successfully."));
+});
+
+export const updateProjectTask = asyncHandler(async (req, res) => {
+  const { id, taskId } = req.params;
+
+  const projecct = req.project;
+
+  let attachments = [];
+  const file = req.files;
+
+  if (file) {
+    file.forEach((el) => {
+      console.log(el, "Heeey");
+      attachments.push({
+        url: `/uploads/${el.filename}`,
+        mimeType: el.mimetype,
+        size: el.size,
+      });
+    });
+  }
+
+  const updatedData = {};
+
+  const { title, description, status, assingee } = req.body;
+
+  if (title) updatedData.title = title;
+  if (description) updatedData.description = description;
+  if (status) updatedData.status = status;
+  if (assingee) updatedData.assingee = assingee;
+  if (attachments.length > 0) updatedData.attachments = attachments;
+
+  const updateTask = await Task.updateOne({ _id: taskId }, updatedData);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(202, updateTask, "The task is updated succesfully "));
 });

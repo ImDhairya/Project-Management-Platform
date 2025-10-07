@@ -1,8 +1,16 @@
 import { Router } from "express";
 import { projectAdmin, verifyJWT } from "../middlewares/auth.middleware.js";
-import { createTasks, getTask, getTasks } from "../controllers/task.controller.js";
+import {
+  createTasks,
+  getTask,
+  getTasks,
+  updateProjectTask,
+} from "../controllers/task.controller.js";
 import { validate } from "../middlewares/validator.middleware.js";
-import { createTasksValidator } from "../validators/project.validator.js";
+import {
+  createTasksValidator,
+  updateTaskValidator,
+} from "../validators/project.validator.js";
 import { Project } from "../models/project.model.js";
 import path from "path";
 import multer from "multer";
@@ -22,21 +30,32 @@ const upload = multer({ storage }); // saves files in /uploads folder
 router.route("/:id").get(verifyJWT, projectAdmin, getTasks);
 
 // add task by project id
-router.route("/:id").post(
-  verifyJWT,
-  projectAdmin,
-  upload.single("attachments"), // file upload handled here.
-  createTasksValidator(),
-  validate,
-  createTasks,
-);
+router
+  .route("/:id")
+  .post(
+    verifyJWT,
+    projectAdmin,
+    upload.single("attachments"),
+    createTasksValidator(),
+    validate,
+    createTasks,
+  );
 // project id   t   task id
 
 // get task details by project id and task id
 router.route("/:id/t/:taskId").get(verifyJWT, getTask);
 
 // // update the task for the project
-// router.route(":id/t/:taskId").put(verifyJWT, projectAdmin, updateProjectTask);
+router
+  .route("/:id/t/:taskId")
+  .put(
+    verifyJWT,
+    projectAdmin,
+    upload.array("attachments", 10),
+    updateTaskValidator(),
+    validate,
+    updateProjectTask,
+  );
 
 // // delete project task
 // router

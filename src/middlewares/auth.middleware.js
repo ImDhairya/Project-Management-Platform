@@ -21,7 +21,6 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
     if (!deodedToken) {
       throw new ApiError("The jwt verification failed.", 403);
     }
-    console.log(deodedToken, "HHHFFFF");
 
     const user = await User.findById(deodedToken?._id).select(
       "-password -refreshToken -isEmailVerified -forgotPasswordToken -forgotPasswordExpiry -emailVerificationToken -emailVerificationExpiry",

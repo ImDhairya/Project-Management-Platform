@@ -103,10 +103,17 @@ const createTasksValidator = () => {
   ];
 };
 
-const updateTaskValidator = [
-  param("taskId").isMongoId().withMessage("Invalid taskId"),
-  ...createTasksValidator(),
-];
+// const updateTaskValidator = [
+//   param("taskId").isMongoId().withMessage("Invalid taskId"),
+//   ...createTasksValidator(),
+// ];
+
+const updateTaskValidator = () => {
+  return [
+    param("taskId").isMongoId().withMessage("Invalid taskId"),
+    ...createTasksValidator(),
+  ];
+};
 
 const createSubTaskValidator = () => {
   return [
