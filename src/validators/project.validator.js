@@ -127,14 +127,18 @@ const createSubTaskValidator = () => {
       .optional()
       .isBoolean()
       .withMessage("Completed must be a boolean"),
+
+      // body('completedBy')
   ];
 };
 
-const updateSubTaskValidator = [
-  param("subTaskId").isMongoId().withMessage("Invalid subTaskId"),
-  body("title").optional().isString(),
-  body("completed").optional().isBoolean(),
-];
+const updateSubTaskValidator = () => {
+  return [
+    param("subTaskId").isMongoId().withMessage("Invalid subTaskId"),
+    body("title").optional().isString(),
+    body("completed").optional().isBoolean(),
+  ];
+};
 
 export {
   createProjectValidator,
