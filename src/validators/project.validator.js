@@ -103,10 +103,17 @@ const createTasksValidator = () => {
   ];
 };
 
-const updateTaskValidator = [
-  param("taskId").isMongoId().withMessage("Invalid taskId"),
-  ...createTasksValidator(),
-];
+// const updateTaskValidator = [
+//   param("taskId").isMongoId().withMessage("Invalid taskId"),
+//   ...createTasksValidator(),
+// ];
+
+const updateTaskValidator = () => {
+  return [
+    param("taskId").isMongoId().withMessage("Invalid taskId"),
+    ...createTasksValidator(),
+  ];
+};
 
 const createSubTaskValidator = () => {
   return [
@@ -120,14 +127,18 @@ const createSubTaskValidator = () => {
       .optional()
       .isBoolean()
       .withMessage("Completed must be a boolean"),
+
+      // body('completedBy')
   ];
 };
 
-const updateSubTaskValidator = [
-  param("subTaskId").isMongoId().withMessage("Invalid subTaskId"),
-  body("title").optional().isString(),
-  body("completed").optional().isBoolean(),
-];
+const updateSubTaskValidator = () => {
+  return [
+    param("subTaskId").isMongoId().withMessage("Invalid subTaskId"),
+    body("title").optional().isString(),
+    body("completed").optional().isBoolean(),
+  ];
+};
 
 export {
   createProjectValidator,
