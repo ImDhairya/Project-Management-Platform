@@ -1,8 +1,8 @@
-import { Notes } from "../models/note.model";
-import { Project } from "../models/project.model";
-import { ApiError } from "../utils/api.error";
-import { ApiResponse } from "../utils/api.response";
-import { asyncHandler } from "../utils/async-handler";
+import { Notes } from "../models/note.model.js";
+import { Project } from "../models/project.model.js";
+import { ApiError } from "../utils/api.error.js";
+import { ApiResponse } from "../utils/api.response.js";
+import { asyncHandler } from "../utils/async-handler.js";
 
 export const getProjectNote = asyncHandler(async (req, res) => {
   const { id } = req.params;

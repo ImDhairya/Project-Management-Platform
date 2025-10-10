@@ -8,6 +8,13 @@ import noteRouter from "./routes/notes.route.js";
 import tasksRouter from "./routes/tasks.route.js";
 import { ApiError } from "./utils/api.error.js";
 import cookieParser from "cookie-parser";
+import { asyncHandler } from "./utils/async-handler.js";
+import {
+  request_get_auth_code_url,
+  get_access_token,
+  get_profile_data,
+} from "../src/utils/oauth.utils.js";
+
 dotenv.config({
   path: "./.env",
 });
@@ -42,6 +49,31 @@ app.use((err, req, res, next) => {
     message: err.message || "Internal Server Error",
   });
 });
+app.get(
+  "/auth",
+  asyncHandler(async (req, res, next) => {
+    res.redirect(request_get_auth_code_url);
+  }),
+);
+
+app.get(
+  process.env.REDIRECT_URI,
+  asyncHandler(async (req, res) => {
+    const authorization_token = req.query.code;
+
+    const response = await get_access_token(authorization_token);
+
+    const { access_token } = response.data;
+
+    const userData = await get_profile_data(access_token);
+
+    const user = {
+      ...userData.data,
+    };
+
+    return res.status(202).json(user);
+  }),
+);
 app.use("/api/v1/healthcheck/", healthCheckRouter);
 app.use("/api/v1/auth/", authRouter);
 app.use("/api/v1/projects/", projectRouter);

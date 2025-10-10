@@ -4,6 +4,7 @@ const noteSchema = new Schema(
   {
     project: {
       type: mongoose.Types.ObjectId,
+      ref: "Project",
       required: true,
     },
 
@@ -15,4 +16,4 @@ const noteSchema = new Schema(
   { timestamps: true },
 );
 
-export const Notes = mongoose.Model("Note", noteSchema);
+export const Notes = mongoose.model("Note", noteSchema);
