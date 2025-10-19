@@ -14,6 +14,7 @@ import {
   get_access_token,
   get_profile_data,
 } from "../src/utils/oauth.utils.js";
+import googleAuthRouer from "./routes/google.auth.route.js";
 
 dotenv.config({
   path: "./.env",
@@ -28,7 +29,7 @@ app.use(express.static("public"));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN?.split(",") || "http://localhost:5173",
+    origin: ["http://localhost:5173", "http://localhost:3000"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Authorization", "Content-Type"],
@@ -49,31 +50,8 @@ app.use((err, req, res, next) => {
     message: err.message || "Internal Server Error",
   });
 });
-app.get(
-  "/auth",
-  asyncHandler(async (req, res, next) => {
-    res.redirect(request_get_auth_code_url);
-  }),
-);
 
-app.get(
-  process.env.REDIRECT_URI,
-  asyncHandler(async (req, res) => {
-    const authorization_token = req.query.code;
-
-    const response = await get_access_token(authorization_token);
-
-    const { access_token } = response.data;
-
-    const userData = await get_profile_data(access_token);
-
-    const user = {
-      ...userData.data,
-    };
-
-    return res.status(202).json(user);
-  }),
-);
+app.use("/google/auth/", googleAuthRouer);
 app.use("/api/v1/healthcheck/", healthCheckRouter);
 app.use("/api/v1/auth/", authRouter);
 app.use("/api/v1/projects/", projectRouter);

@@ -6,7 +6,6 @@ import axios from "axios";
 
 dotenv.config();
 
-console.log("taeeehkha", process.env.CLIENT_ID);
 
 const google_access_token_endpoint = "https://oauth2.googleapis.com/token";
 
