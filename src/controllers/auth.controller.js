@@ -6,7 +6,7 @@ import { emailVerificationMailgenContent, sendEmail } from "../utils/mail.js";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 
-const generateAccessAndRefreshTokens = async (userId) => {
+export const generateAccessAndRefreshTokens = async (userId) => {
   if (!userId) {
     throw new Error("Please provide a userId to generate tokens.");
   }

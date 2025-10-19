@@ -8,6 +8,14 @@ import noteRouter from "./routes/notes.route.js";
 import tasksRouter from "./routes/tasks.route.js";
 import { ApiError } from "./utils/api.error.js";
 import cookieParser from "cookie-parser";
+import { asyncHandler } from "./utils/async-handler.js";
+import {
+  request_get_auth_code_url,
+  get_access_token,
+  get_profile_data,
+} from "../src/utils/oauth.utils.js";
+import googleAuthRouer from "./routes/google.auth.route.js";
+
 dotenv.config({
   path: "./.env",
 });
@@ -21,7 +29,7 @@ app.use(express.static("public"));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN?.split(",") || "http://localhost:5173",
+    origin: ["http://localhost:5173", "http://localhost:3000"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Authorization", "Content-Type"],
@@ -42,6 +50,8 @@ app.use((err, req, res, next) => {
     message: err.message || "Internal Server Error",
   });
 });
+
+app.use("/google/auth/", googleAuthRouer);
 app.use("/api/v1/healthcheck/", healthCheckRouter);
 app.use("/api/v1/auth/", authRouter);
 app.use("/api/v1/projects/", projectRouter);

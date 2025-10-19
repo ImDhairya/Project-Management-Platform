@@ -40,7 +40,7 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      required: [true, "Password is a requried field."],
+      // required: [true, "Password is a requried field."],
     },
 
     isEmailVerified: {
